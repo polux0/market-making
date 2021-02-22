@@ -1,0 +1,64 @@
+1. na svakih 5 sekundi:
+{ 
+	
+	const state = await market.getOrders();
+	await market.fillOrders(state);
+	await market.createRandomOrders(state);
+
+}
+2. na svakih 30 sekundi: 
+
+{
+	utils.logAssetBalances(balances, reservedBalances);
+
+}
+
+to-do: 
+
+0. trenutno postoje dve funkcije - create random bid & create random ask -> izbeci code duplication -> i spakovati sve u jednu funkciju(); [reseno]
+1. izdvojiti logger za ordere ( nema potrebe da se dupliraju ) [reseno]
+2. handle-ovati empty array u fillOrderima(), pendingOrdera();
+3. handle-ovati error na market.getOrders() -> vratiti empty state, a u `fillOrders()` i `createRandomOrders()` handle-ovati empty state;
+
+predlog: 
+
+0. replace all .forEach(), .map(), .find(), filter() with basic foor loops in order to enhance performance;
+1. canceling orders is suboptimal but that's because in realistic scenario I suppose orders would be cancelled acording to some rule / strategy ( Could be wrong assumption because prices are always changing ) ;
+1. napraviti chron koji okida index.ts na svakih 5 sekundi -> to ima vise smisla; ( pogotovo ako nesto pukne );
+2. dockerizovati sve;
+3. kreirati bazu kako bi se sacuvali orderi i njima lakse moglo da se manipulise kao i kako bi postojao settings gde bismo mogli dinamicki da vucemo pravila za strategije;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

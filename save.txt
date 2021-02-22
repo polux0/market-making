@@ -1,0 +1,143 @@
+
+updateBalances()
+
+  // if(order.getType() === OrderTypes.BID){
+  //   if(order.getState() === OrderStates.CREATED){
+  //     const orderTotalUSD = order.getPrice() * order.getAmount();
+  //     balances.usd-=orderTotalUSD;
+  //     reservedBalances.usd+=orderTotalUSD;
+  //   }
+  //   if(order.getState() === OrderStates.FILLED){
+  //     const orderTotalUSD = order.getPrice() * order.getAmount();
+  //     reservedBalances.usd -= orderTotalUSD;
+  //     balances.usd -= orderTotalUSD;
+  //     balances.eth += order.getAmount();
+  //   }
+  // }
+  // if(order.getType() === OrderTypes.ASK){
+  //   if(order.getState() === OrderStates.CREATED){
+  //     const orderTotalETH = order.getPrice() * Math.abs(order.getAmount());
+  //     balances.eth+=orderTotalETH;
+  //     reservedBalances.eth+=orderTotalETH;
+  //   }
+  //   if(order.getState() === OrderStates.FILLED){
+  //     reservedBalances.eth -= order.getAmount();
+  //     balances.eth -= order.getAmount();
+  //     balances.usd += order.getAmount() * order.getPrice();
+  //   }
+  // }
+  
+razrešiti:
+
+ASK
+{
+	kada se kreira ASK ( 0.02 eth-a, 1900 price );
+
+	balance.eth -= order.amount();
+	reservedBalance.eth  += order.amount();
+
+	kada se fill-uje ASK (0.02 eth-a, 1900 usd-a price );
+
+	balance.usd += order.amount() * order.price();
+	reservedBalance.eth -= order.amount();
+
+	kada se cancell-uje ASK ( 0.02 eth-a, 1900 usd-a [price]);
+
+	balance.eth += order.amount();
+	reservedBalance.eth -= order.amount();
+
+
+
+
+}
+BID
+{
+	kada se kreira BID ( 0.02 eth-a, 1900 price );
+	
+	balance.usd -= order.amount() * order.price();
+	reservedBalances.usd += order.amount() * order.price();
+	
+	kada se fill-uje BID ( 0.02 eth-a, 1900 price );
+	
+	balance.eth += order.amount();
+	reservedBalances.usd -= order.amount() * order.price();
+	
+	kada se cancelluje BID ( 0.02 eth-a, 1900 price )
+	
+	balance.usd += order.amount() * order.price();
+	reservedBalances.eth-= order.amount() * order.price();
+	
+
+
+
+}
+***export const createOrder
+  
+  // was before;
+  // if(type === OrderTypes.BID){
+  //   if(orderTotal < balances.usd){
+  //     order = new Order(price, amount , orderId, type, OrderStates.PLACED);
+  //     await updateBalances(order, balances, reserveBalances);
+  //     logOrderState(order);
+  //   }
+  //   else console.log('BID COULD NOT BE PLACED - THERE IS NOT ENOUGH ETH BALANCE');
+  // }
+  // else{
+  //   if(orderTotal < balances.eth){
+  //     order = new Order(price, amount, orderId, type, OrderStates.PLACED);
+  //     await updateBalances(order, balances, reserveBalances);
+  //     logOrderState(order);
+  //   }
+  //   else console.log('ASK COULD NOT BE PLACED - THERE IS NOT ENOUGH USD BALANCE');
+
+  // }
+  
+***export const createOrders
+
+export const createOrders = async (bestBid: Order, bestAsk: Order, balances: any, reservedBalances: any, pendingOrders: Order[]) => {
+
+  const lastPriceEth = await getLastPrice();
+  // number of orders should be configurable in order to fulfill strategy requirements;
+  for (let i = 0, j = i+1; i < 1; i++, j++) {
+
+    //const bid: Order = await createRandomBid(bestBid, lastPriceEth[6], balances, i, OrderTypes.BID, OrderStates.PLACED);
+
+    // if(bid.getPrice() !== 0 && bid.getAmount() !== 0){
+    // await updateBalances(bid, balances, reservedBalances);
+    //   pendingOrders.push(bid);  
+    //   //dodati log as well kao i za fill-ovane ordere; ( modularizovati log )
+    //   console.log(
+    //     'PLACED BID @ PRICE: ' + 
+    //     bid.getPrice() + 
+    //     ' AMOUNT:  ' + 
+    //     bid.getAmount() + 
+    //     '(eth + ' + 
+    //     bid.getAmount() + 
+    //     ' usd - ' + 
+    //     bid.getPrice() * bid.getAmount() +
+    //     ' )');
+    // }
+    const ask: Order = await createRandomAsk(bestAsk, balances, j, OrderTypes.ASK, OrderStates.PLACED);
+
+    if(ask.getPrice() !== 0 && ask.getAmount() !== 0){
+      await updateBalances(ask, balances, reservedBalances);
+      pendingOrders.push(ask);
+      // console.log(
+      //   'PLACED ASK @ PRICE: ' + 
+      //   ask.getPrice() + 
+      //   ' AMOUNT:  ' + 
+      //   -Math.abs(ask.getAmount()) + 
+      //   '(eth' + 
+      //   -Math.abs(ask.getAmount()) + 
+      //   ' usd+ ' + 
+      //   ask.getPrice() * ask.getAmount() +
+      //   ' )');
+      logOrderState(ask);
+      
+    }
+  }
+}
+
+
+
+
