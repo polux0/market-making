@@ -7,7 +7,7 @@ export const getOrders = async () => {
   };
   const url = `https://api.deversifi.com/bfx/v2/book/${params.symbol}/${params.precision}`;
   let response: any;
-  try{
+  try {
     response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -15,8 +15,7 @@ export const getOrders = async () => {
         'Content-Type': 'application/json',
       },
     });
-  }
-  catch(error){
+  } catch (error) {
     console.log('Could not fetch latest orders:', params.symbol);
     console.log('Error', error);
     return {};
