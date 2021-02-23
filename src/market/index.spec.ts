@@ -6,10 +6,34 @@ import market = require('./index');
 
 describe('function updateBalances()', () => {
   test('if function will update balances in accordance with the state of the order', async () => {
-    const bidPlaced: Order= new Order(1, 1, 1, OrderTypes.BID, OrderStates.PLACED);
-    const askPlaced: Order = new Order(1, 1, 2, OrderTypes.ASK, OrderStates.PLACED);
-    const bidFilled: Order= new Order(1, 1, 3, OrderTypes.BID, OrderStates.FILLED);
-    const askFilled: Order = new Order(1, 1, 4, OrderTypes.ASK, OrderStates.FILLED);
+    const bidPlaced: Order = new Order(
+      1,
+      1,
+      1,
+      OrderTypes.BID,
+      OrderStates.PLACED,
+    );
+    const askPlaced: Order = new Order(
+      1,
+      1,
+      2,
+      OrderTypes.ASK,
+      OrderStates.PLACED,
+    );
+    const bidFilled: Order = new Order(
+      1,
+      1,
+      3,
+      OrderTypes.BID,
+      OrderStates.FILLED,
+    );
+    const askFilled: Order = new Order(
+      1,
+      1,
+      4,
+      OrderTypes.ASK,
+      OrderStates.FILLED,
+    );
     const bidCanceled: Order = new Order(
       1,
       1,
@@ -190,8 +214,8 @@ describe('function createOrders()', () => {
       reserveBalances,
       pendingOrders,
     );
-    let bids: number = 0;
-    let asks: number = 0;
+    let bids = 0;
+    let asks = 0;
     for (const order of pendingOrders) {
       order.getType() === OrderTypes.BID ? bids++ : asks++;
     }
