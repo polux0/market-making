@@ -1,8 +1,9 @@
-import { Order } from './orders/order';
-import { OrderTypes } from './orders/ordertypes';
+import { Order } from './order/order';
+import { OrderTypes } from './order/ordertypes';
 
-import market = require('./utils/market');
-import utils = require('./utils/utils');
+import logger = require('./logs/');
+import api = require('./external');
+import market = require('./market');
 
 const pendingOrders: Order[] = [];
 const filledOrders: Order[] = [];
@@ -17,7 +18,7 @@ const reservedBalances = {
 };
 
 const marketCycle = async () => {
-  const state = await market.getOrders();
+  const state = await api.getOrders();
 
   const bestBid: Order = new Order(
     state[0][0],
@@ -32,8 +33,14 @@ const marketCycle = async () => {
     0,
     OrderTypes.UNEDFINED,
   );
-
-  await utils.fillOrders(
+  await market.createOrders(
+    bestBid,
+    bestAsk,
+    balances,
+    reservedBalances,
+    pendingOrders,
+  );
+  await market.fillOrders(
     bestBid,
     bestAsk,
     pendingOrders,
@@ -41,18 +48,11 @@ const marketCycle = async () => {
     balances,
     reservedBalances,
   );
-  await utils.createOrders(
-    bestBid,
-    bestAsk,
-    balances,
-    reservedBalances,
-    pendingOrders,
-  );
   setTimeout(marketCycle, 5000);
 };
 
 const balanceCycle = async () => {
-  utils.logAssetBalances(balances, reservedBalances);
+  logger.logAssetBalances(balances);
   setTimeout(balanceCycle, 30000);
 };
 setTimeout(marketCycle, 5000);

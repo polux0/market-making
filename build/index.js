@@ -36,9 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var order_1 = require("./orders/order");
-var market = require('./utils/market');
-var utils = require('./utils/utils');
+var order_1 = require("./order/order");
+var logger = require("./logs/");
+var api = require("./external");
+var market = require("./market");
 var pendingOrders = [];
 var filledOrders = [];
 var balances = {
@@ -53,16 +54,16 @@ var marketCycle = function () { return __awaiter(void 0, void 0, void 0, functio
     var state, bestBid, askSearch, bestAsk;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, market.getOrders()];
+            case 0: return [4 /*yield*/, api.getOrders()];
             case 1:
                 state = _a.sent();
                 bestBid = new order_1.Order(state[0][0], state[0][2], 0, 2 /* UNEDFINED */);
                 askSearch = state.find(function (order) { return order[2] < 0; });
                 bestAsk = new order_1.Order(askSearch[0], askSearch[2], 0, 2 /* UNEDFINED */);
-                return [4 /*yield*/, utils.fillOrders(bestBid, bestAsk, pendingOrders, filledOrders, balances, reservedBalances)];
+                return [4 /*yield*/, market.createOrders(bestBid, bestAsk, balances, reservedBalances, pendingOrders)];
             case 2:
                 _a.sent();
-                return [4 /*yield*/, utils.createOrders(bestBid, bestAsk, balances, reservedBalances, pendingOrders)];
+                return [4 /*yield*/, market.fillOrders(bestBid, bestAsk, pendingOrders, filledOrders, balances, reservedBalances)];
             case 3:
                 _a.sent();
                 setTimeout(marketCycle, 5000);
@@ -72,7 +73,7 @@ var marketCycle = function () { return __awaiter(void 0, void 0, void 0, functio
 }); };
 var balanceCycle = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        utils.logAssetBalances(balances, reservedBalances);
+        logger.logAssetBalances(balances);
         setTimeout(balanceCycle, 30000);
         return [2 /*return*/];
     });

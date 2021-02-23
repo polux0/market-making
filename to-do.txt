@@ -35,9 +35,15 @@ predlog:
 
 
 
+// Change bid orders;
 
 
 
+      // if(order.getType() === OrderTypes.BID){
+      //   // should set minimum as best bid, maximum as best bid + bestBid/20;
+      //   // console.log('order price: ' + order.getPrice());
+      //   // console.log('best bid: ' + bestBid.getPrice());
+      //
 
 
 
